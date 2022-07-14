@@ -52,6 +52,14 @@ $idTutor = $_SESSION['idMed'];
 
                 $controle = $modelControle->joins($idTutor);
                 //var_dump($controle);
+                function Mask($mask,$str){
+                    $str = str_replace("55","",$str);
+                    for($i=0;$i<strlen($str);$i++){
+                        $mask[strpos($mask,"#")] = $str[$i];
+                    }
+                    return $mask;
+                    
+                }
                 ?>
                 <h1 class="pb-5">Médico Tutor <?= $user->NomeMedico; ?></h1>
 
@@ -59,6 +67,7 @@ $idTutor = $_SESSION['idMed'];
                     <thead class="thead-dark">
                     <th>Nome</th>
                     <th>E-mail</th>
+                    <th>Telefone</th>
                     <th>Período Inicial</th>
                     <th>Período Fim</th>
                     <th>Realizou tutoria</th>
@@ -71,18 +80,26 @@ $idTutor = $_SESSION['idMed'];
                             <tr>
                             <input type="hidden" name="idControle" value="<?= $calData->idControle ?>">
                             
-                            <td><?= $calData->NomeMedico ?></td>
-                            <td><?= $calData->email ?></td>
-                            <td><?= $calData->PeriodoInicial ?></td>
-                            <td><?= $calData->PeriodoFinal ?></td>
+                            <td class="font-weight-bold"><?= $calData->NomeMedico ?></td>
+                            <td class="font-weight-bold"><?= $calData->email ?></td>
+                            <td class="font-weight-bold"><?php $fone = $calData->fone_zap; 
+                                    $fone = str_replace("+", "", $fone);
+                                    $fone = str_replace(" ", "", $fone);
+                                    $fone = str_replace("(", "", $fone);
+                                    $fone = str_replace(")", "", $fone);
+                                    echo Mask("(##)#####-####",$fone);
+                                    ?>
+                            </td>
+                            <td class="font-weight-bold"><?= $calData->PeriodoInicial ?></td>
+                            <td class="font-weight-bold"><?= $calData->PeriodoFinal ?></td>
                             <?php if($calData->FlagRealizouTutoria == "" || $calData->JustificativaTutoria == ""): ?>
                             <td>
-                                <div class="form-check">
+                                <div class="form-check font-weight-bold">
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" value="sim" name="opcRadio">Sim
                                     </label>
                                 </div>
-                                <div class="form-check">
+                                <div class="form-check font-weight-bold">
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" value="não" name="opcRadio">Não
                                     </label>
@@ -118,17 +135,18 @@ $idTutor = $_SESSION['idMed'];
                         </form>
                         <?php
                             endforeach;
-                            $idControle = $opcao = $mensagem = "";
+                            $idControle = 0;
+                            $opcao = $mensagem = "";
+                            if(isset($_POST['enviar'])){
                             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 $idControle = filter_input(INPUT_POST, 'idControle', FILTER_SANITIZE_SPECIAL_CHARS);
                                 $opcao = filter_input(INPUT_POST, 'opcRadio', FILTER_SANITIZE_SPECIAL_CHARS);
                                 $mensagem = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_SPECIAL_CHARS);
-                                //var_dump(gettype($idControle));
+                                var_dump($idControle);
                                 $idControle = (int)$idControle;
-                                // var_dump(gettype($idControle));
-                                
-                            }
-
+                                 var_dump(gettype($idControle));                               
+                            
+                            
                             $controleCalend = (new \Source\Models\ControlCalendario())->findById($idControle);
                             $controleCalend->FlagRealizouTutoria = $opcao;
                             $controleCalend->JustificativaTutoria = $mensagem;
@@ -136,7 +154,9 @@ $idTutor = $_SESSION['idMed'];
 //                           
                             $controleCalend->Atualizar($idControle);
 
-                            //var_dump($controleCalend);
+                            var_dump($controleCalend);
+                            }
+                            }
                         ?>
                     </tbody>
                 </table>

@@ -9,7 +9,7 @@ fullStackPHPClassName("Calendário Tutoria");
 require __DIR__ . "/../source/autoload.php";
 
 $idBolsista = $_SESSION['idMed'];
-var_dump($idBolsista);
+//var_dump($idBolsista);
 ?>
 <!DOCTYPE html>
 <html>
@@ -47,25 +47,44 @@ var_dump($idBolsista);
                 <?php
                 $modelMedico = new \Source\Models\Medico();
                 $modelControle = new \Source\Models\ControlCalendario();
-
+                $modelCntrlEmail = new \Source\Models\ControlCalendario();
+                
                 $user = $modelMedico->find("idMedico=:id", "id=$idBolsista");
 
                 $controle = $modelControle->joinsBolsista($idBolsista);
-                var_dump($controle);
+                $ctrlEmail = $modelCntrlEmail->joinsEmailTutor($idBolsista);
+                function Mask($mask,$str){
+                    $str = str_replace("55","",$str);
+                    for($i=0;$i<strlen($str);$i++){
+                        $mask[strpos($mask,"#")] = $str[$i];
+                    }
+                    return $mask;}
                 ?>
-                <h1>Médico Bolsista <?= $user->NomeMedico; ?></h1>
-                <table class="table table-primary table-hover table-striped table-responsive-sm">
-                    <thead class="thead-dark">                    
-                    <th>E-mail Tutor</th>
+                <h1 class="pb-5 border border-primary text-center">Médico Bolsista <?= $user->NomeMedico; ?></h1>
+                <table class="border border-primary table table-primary table-hover table-striped table-responsive-sm">
+                    <thead class="thead-dark border border-primary">                    
+                    <th>E-mail do Tutor</th>
+                    <th>Telefone do Tutor</th>
                     <th>Período Inicial</th>
                     <th>Período Fim</th>
                     </thead
                     <tbody>
-                    <?php foreach ($controle as $calData): ?>                        
-                        <td><?= $calData->email ?></td>
-                        <td><?= $calData->PeriodoInicial ?></td>
-                        <td><?= $calData->PeriodoFinal ?></td>
-                    <?php endforeach; ?>
+                        <tr>
+                        <?php foreach ($controle as $value): ?>                            
+                            <?php foreach ($ctrlEmail as $mail): ?>
+                                <td class="font-weight-bold"><?= $mail->email; ?></td>
+                                <td class="font-weight-bold"><?php $fone = $mail->fone_zap;
+                                    $fone = str_replace("+", "", $fone);
+                                    $fone = str_replace(" ", "", $fone);
+                                    $fone = str_replace("(", "", $fone);
+                                    $fone = str_replace(")", "", $fone);
+                                  echo Mask("(##)#####-####",$fone);
+                                ?></td>
+                            <?php endforeach; ?>
+                                <td class="font-weight-bold"><?= $value->PeriodoInicial; ?></td>
+                                <td class="font-weight-bold"><?= $value->PeriodoFinal; ?></td>
+                        <?php endforeach; ?>
+                        </tr>
                     </tbody>
                 </table>
             </div>

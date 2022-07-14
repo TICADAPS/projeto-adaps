@@ -40,7 +40,8 @@ return $load->fetchObject(__CLASS__);
 
 public function joins(int $idTutor): ?array
 {
-$joins = $this->read("select cc.idControle,med.NomeMedico,med.email,ct.PeriodoInicial,ct.PeriodoFinal,
+$joins = $this->read("select cc.idControle,med.NomeMedico,med.email,med.fone_zap,
+        ct.PeriodoInicial,ct.PeriodoFinal,
         cc.FlagRealizouTutoria,cc.JustificativaTutoria
         from medico med
         inner join controlecalendario cc on med.idMedico = cc.idMedico
@@ -61,7 +62,21 @@ from medico med
 inner join controlecalendario cc on med.idMedico = cc.idMedico
 inner join calendariotutoria ct on cc.idCalendario = ct.idCalendario
 inner join vaga_tutoria vt on vt.idMedico = cc.idMedico
-where vt.idMedico = $idBolsista;");
+where vt.idMedico ={$idBolsista};");
+if ($this->fail() ||!$joins->rowCount()) {
+$this->message = "Usuário não encontrado para o id informado";
+return null;
+}
+return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+
+}
+public function joinsEmailTutor(int $idBolsista): ?array
+{
+$joins = $this->read("select medico.email,medico.fone_zap from medico where medico.idMedico = "
+        . "(SELECT vaga_tutoria.idTutor from vaga_tutoria "
+        . "INNER JOIN medico_bolsista on vaga_tutoria.idMedico = medico_bolsista.idMedico "
+        . "where medico_bolsista.idMedico = $idBolsista);");
+
 if ($this->fail() ||!$joins->rowCount()) {
 $this->message = "Usuário não encontrado para o id informado";
 return null;

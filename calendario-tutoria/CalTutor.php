@@ -170,7 +170,7 @@ $idTutor = $_SESSION['idMed'];
                                     $controleCalend->JustificativaTutoria = $mensagem;
                                     //var_dump($controleCalend);
                                     //   
-                                    if($opcao==="não"){
+                                    if($opcao==="Não"){
                                         if($mensagem!==""){
                                             $controleCalend->Atualizar($idControle);
                                         }else{
@@ -192,10 +192,10 @@ $idTutor = $_SESSION['idMed'];
         </div>
         <script>
             function validaSim(op){
-                document.getElementById(op).value="sim";
+                document.getElementById(op).value="Sim";
             }
             function validaNao(op){
-                document.getElementById(op).value="não";
+                document.getElementById(op).value="Não";
             }
         </script>
    </body>

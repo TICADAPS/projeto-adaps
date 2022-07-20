@@ -72,7 +72,9 @@ return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 }
 public function joinsEmailTutor(int $idBolsista): ?array
 {
-$joins = $this->read("select medico.email,medico.fone_zap from medico where medico.idMedico = "
+$joins = $this->read("select medico.email,medico.fone_zap,municipio.Municipio"
+        . " from medico inner join municipio on medico.Municipio_id = municipio.cod_munc"
+        . " where medico.idMedico = "
         . "(SELECT vaga_tutoria.idTutor from vaga_tutoria "
         . "INNER JOIN medico_bolsista on vaga_tutoria.idMedico = medico_bolsista.idMedico "
         . "where medico_bolsista.idMedico = $idBolsista);");
@@ -81,6 +83,18 @@ if ($this->fail() ||!$joins->rowCount()) {
 $this->message = "Usuário não encontrado para o id informado";
 return null;
 }
+return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+
+}
+
+public function joinsCalendarioTutoria(): ?array
+{
+$joins = $this->read("select cc.idCalendario,cc.idMedico,mb.nome_medico,ct.PeriodoInicial,ct.PeriodoFinal 
+                    from controlecalendario cc
+                    inner join medico_bolsista mb on cc.idMedico = mb.idMedico
+                    inner join calendariotutoria ct on ct.idCalendario = cc.idCalendario
+                    order by mb.nome_medico;");
+
 return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 
 }

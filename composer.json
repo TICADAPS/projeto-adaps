@@ -1,0 +1,30 @@
+ {
+    "name": "marcelo.farias_adaps/07-recursos-e-componentes",
+    "description": "Formação Full Stack PHP Developer",    
+    "authors": [
+        {
+            "name": "Marcelo Farias",
+            "email": "106495432+TICADAPS@users.noreply.github.com"
+        }
+    ],
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "autoload": {
+        "psr-4": {
+            "Source\\": "source/"
+        },
+        "files": [
+            "source/Support/Config.php",
+            "source/Support/Helpers.php"
+        ]
+    },
+    "require": {
+        "phpmailer/phpmailer": "~6.0",
+        "league/plates": "v4.0.0-alpha",
+        "coffeecode/uploader": "^1.0",
+        "coffeecode/cropper": "1.0.*",
+        "coffeecode/optimizer": "^1.0",
+        "coffeecode/paginator": "^1.0"
+    }
+}

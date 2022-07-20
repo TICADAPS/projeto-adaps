@@ -20,7 +20,7 @@ $idTutor = $_SESSION['idMed'];
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    
+
     </head>
     <body>
         <div class="container-fluid">
@@ -39,6 +39,7 @@ $idTutor = $_SESSION['idMed'];
                     </div>
                 </div>
             </div>
+            <p><a href="logout.php" class="btn btn-danger btn-lg">Sair</a></p>
         </div>
 
         <div class="form-1-container section-container">
@@ -50,14 +51,14 @@ $idTutor = $_SESSION['idMed'];
                 $user = $modelMedico->find("idMedico=:id", "id=$idTutor");
 
                 $controle = $modelControle->joins($idTutor);
+
                 //var_dump($controle);
-                function Mask($mask,$str){
-                    $str = str_replace("55","",$str);
-                    for($i=0;$i<strlen($str);$i++){
-                        $mask[strpos($mask,"#")] = $str[$i];
+                function Mask($mask, $str) {
+                    $str = str_replace("55", "", $str);
+                    for ($i = 0; $i < strlen($str); $i++) {
+                        $mask[strpos($mask, "#")] = $str[$i];
                     }
                     return $mask;
-                    
                 }
                 ?>
                 <h1 class="pb-5">Médico Tutor <?= $user->NomeMedico; ?></h1>
@@ -79,127 +80,141 @@ $idTutor = $_SESSION['idMed'];
                                       substr($qqdata,5,2).'/'.
                                       substr($qqdata,0,4);
                             return($tempdata);
-                        } 
+                        }                       
                         ?>
-                        <?php foreach ($controle as $calData):?>    
+                        <?php foreach ($controle as $calData): ?>    
                         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data" autocomplete="off" novalidate>
                             <tr>
                             <input type="hidden" name="idControle" value="<?= $calData->idControle ?>">
-                            
-                            <td class="font-weight-bold"><?= $calData->NomeMedico ?></td>
-                            <td class="font-weight-bold"><?= $calData->email ?></td>
-                            <td class="font-weight-bold"><?php $fone = $calData->fone_zap; 
-                                    $fone = str_replace("+", "", $fone);
-                                    $fone = str_replace(" ", "", $fone);
-                                    $fone = str_replace("(", "", $fone);
-                                    $fone = str_replace(")", "", $fone);
-                                    echo Mask("(##)#####-####",$fone);
-                                    ?>
+                            <input type="hidden" id="opcao<?= $calData->idControle ?>" name="opcao">
+                            <td><?= $calData->NomeMedico ?></td>
+                            <td><?= $calData->email ?></td>
+                            <td><?php
+                                $fone = $calData->fone_zap;
+                                $fone = str_replace("+", "", $fone);
+                                $fone = str_replace(" ", "", $fone);
+                                $fone = str_replace("(", "", $fone);
+                                $fone = str_replace(")", "", $fone);
+                                echo Mask("(##)#####-####", $fone);
+                                ?>
                             </td>
-                            <td class="font-weight-bold"><?= $calData->PeriodoInicial ?></td>
-                            <td class="font-weight-bold"><?= $calData->PeriodoFinal ?></td>
+                            <td><?= vemdata($calData->PeriodoInicial) ?></td>
+                            <td><?= vemdata($calData->PeriodoFinal) ?></td> 
 
                             <td>
                                 <div class="form-group">                                            
                                     <label><?= $calData->JustificativaTutoria ?></label>
                                 </div>
                             </td>
-                            <td>
-                                <button type="button" class="btn btn-success"
-                                        data-toggle="modal" data-target=".modalOprSim<?= $calData->idControle ?>">Sim</button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-outline-warning"
-                                        data-toggle="modal" data-target=".modalOprNao<?= $calData->idControle ?>" >Não</button>
-                            </td>
+                            <?php
+                            if ($calData->FlagRealizouTutoria != '' || $calData->FlagRealizouTutoria != null) {
+                                echo "<td colspan=2><label>$calData->FlagRealizouTutoria</label></td>";
+                            } else {
+                                ?>
+                                <td> 
+                                    <button type="button" class="btn btn-success" onclick='validaSim("opcao<?= $calData->idControle ?>");'
+                                            data-toggle="modal" data-target="#modalOprSim<?= $calData->idControle ?>">Sim</button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-warning" <?php if ($calData->FlagRealizouTutoria === 'sim') echo "disabled"; ?>
+                                            onclick='validaNao("opcao<?= $calData->idControle ?>");'
+                                            data-toggle="modal" data-target="#modalOprNao<?= $calData->idControle ?>" >Não</button>
+                                </td>
+        <?php
+    }
+    ?>
                             <!-- modal de confirmação de apresentação do médico -->
-                            <div class="modal fade modalOprSim<?= $calData->idControle ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="modalOprSim<?= $calData->idControle ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLabel">Confirmação de Tutoria</h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
-                                    </div>
-                                    <div class="modal-body">
-                                      <label for="date-apresentacao" class="text-justify">Confirmar tutoria realizada?</label><br>
-                                      <!--<input type="hidden" value="sim" name="opcRadio">-->
-                                    </div>
-                                    <div class="modal-footer">
-                                        <input type="submit" class="btn btn-primary enviar" id="btnSim" onclick="pegarOpcSim()" name="enviar" value="Confirmar">
-                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            <!-- fim do modal de confirmação de apresentação do médico -->
-                            <input type="hidden" id="opcRadioSim" value="sim">
-                            <!-- modalOprNao de confirmação de apresentação do médico -->
-                            <div class="modal fade modalOprNao<?= $calData->idControle ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLabel">Justificativa</h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <label for="date-apresentacao" class="text-justify">Justifique a tutoria não realizada.</label><br>
-                                        <div class="col-12">
-                                            <textarea id="id" class="form-control" name="comment"></textarea>
-                                            <!--<input type="hidden" value="não" name="opcRadio">-->
-                                            <input type="hidden" id="opcRadioNao" value="não">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary">
+                                            <h5 class="modal-title text-light" id="exampleModalLabel">Confirmação de Tutoria</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label for="date-apresentacao" class="text-justify font-weight-bold">Confirmar tutoria realizada?</label><br>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success" name="enviar">Confirmar</button>
+                                            <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Cancelar</button>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <input type="submit" class="btn btn-primary enviar" id="btnNao" onclick="pegarOpcNao()" name="enviar" value="Enviar">
-                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                    </div>
-                                  </div>
                                 </div>
-                              </div>
+                            </div>
+                            <!-- fim do modal de confirmação de apresentação do médico -->
+
+                            <!-- modalOprNao de confirmação de apresentação do médico -->
+                            <div class="modal fade" id="modalOprNao<?= $calData->idControle ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary">
+                                            <h5 class="modal-title text-light" id="exampleModalLabel">Justificativa</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label for="date-apresentacao" class="text-justify font-weight-bold">Justifique a tutoria não realizada.</label><br>
+                                            <div class="col-12">
+                                                <textarea id="comment" class="form-control" name="comment" style="resize: none"></textarea>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success" name="enviar">Enviar</button>
+                                            <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- fim do modalOprNao de confirmação de apresentação do médico -->
+                            <input type="hidden" id="modalUtilizada" name="modalUtilizada" value="modalOprNao<?= $calData->idControle ?>">
                             </tr>
                         </form>
                         <?php
-                            endforeach;
-                            $idControle = 0;
-                            $opcao = $mensagem = "";
-                            if(isset($_POST['enviar'])){
-                            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                                $idControle = filter_input(INPUT_POST, 'idControle', FILTER_SANITIZE_SPECIAL_CHARS);                          
-                                $opcao = filter_input(INPUT_POST, 'opcRadio', FILTER_SANITIZE_SPECIAL_CHARS);
-                                $mensagem = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_SPECIAL_CHARS);
-                                var_dump($opcao);
-                                $idControle = (int)$idControle;
-                                //var_dump(gettype($idControle));                             
-                                $controleCalend = (new \Source\Models\ControlCalendario())->findById($idControle);
-                                $controleCalend->FlagRealizouTutoria = $opcao;
-                                $controleCalend->JustificativaTutoria = $mensagem;
-                                //var_dump($controleCalend);                          
-                                $controleCalend->Atualizar($idControle);
-                                //var_dump($controleCalend);
+                    endforeach;
+                    $idControle = 0;
+                    $opcao = $mensagem = "";
+                    if (isset($_POST['enviar'])) {
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                            $idControle = filter_input(INPUT_POST, 'idControle', FILTER_SANITIZE_SPECIAL_CHARS);
+                            $opcao = filter_input(INPUT_POST, 'opcao', FILTER_SANITIZE_SPECIAL_CHARS);
+                            $mensagem = trim($_POST['comment']);
+                            //var_dump($opcao);
+                            $idControle = (int) $idControle;
+                            //var_dump(gettype($idControle));                             
+                            $controleCalend = (new \Source\Models\ControlCalendario())->findById($idControle);
+                            $controleCalend->FlagRealizouTutoria = $opcao;
+                            $controleCalend->JustificativaTutoria = $mensagem;
+                            //var_dump($controleCalend);                          
+                            if ($opcao === "Não") {
+                                if ($mensagem !== "") {
+                                    $controleCalend->Atualizar($idControle);
+                                } else {
+                                    echo "<script>alert('Preencha o campo Justificativas')</script>";
                                 }
-                                //echo "<META HTTP-EQUIV='REFRESH' CONTENT=\"0;URL='CalTutor.php'\">";
+                            } else {
+                                $controleCalend->Atualizar($idControle);
                             }
-                        ?>
+                            echo "<META HTTP-EQUIV='REFRESH' CONTENT=\"0;
+                                            URL='CalTutor.php'\">";
+                            //var_dump($controleCalend);
+                        }                        
+                    }
+                    ?>
                     </tbody>
                 </table>
             </div>
-        </div>
-        <script language="javascript">
-            function pegarOpcSim(){
-                var btnSim = document.getElementById('opcRadioSim').value;  
-                
-                //document.getElementById("opcRadioSim").setAttribute("name", "opcRadio");                 
-                console.log(btnSim);
+        </div>   
+        <script>
+            function validaSim(op){
+                document.getElementById(op).value="Sim";
             }
-            function pegarOpcNao(){
-                //var btnNao = document.getElementById('btnNao').value;
-                document.getElementById("opcRadioNao").setAttribute("name", "opcRadio");
+            function validaNao(op){
+                document.getElementById(op).value="Não";
             }
         </script>
-   </body>
+    </body>
 </html>

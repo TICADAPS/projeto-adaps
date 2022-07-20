@@ -110,9 +110,9 @@ class Crud extends Conexao
     #validar usuário
 
     public function validaUser($user) {
-        if ($user == "050.574.797-92") {
-            $_SESSION['cpfAdmin'] = "050.574.797-92";
-            header("Location:../AreaAdmin.php");
+        if ($user == "011.792.350-88") {
+            $_SESSION['cpfAdmin'] = "011.792.350-88";
+            header("Location:../Admin.php");
         } else {
             $this->userCpf = $user;
             $sql = "SELECT * FROM medico WHERE CpfMedico = :userCpf LIMIT 1";

@@ -40,6 +40,7 @@ $idBolsista = $_SESSION['idMed'];
                     </div>
                 </div>
             </div>
+            <p><a href="logout.php" class="btn btn-danger btn-lg">Sair</a></p>
         </div>
 
         <div class="form-1-container section-container">
@@ -65,24 +66,34 @@ $idBolsista = $_SESSION['idMed'];
                     <thead class="thead-dark border border-primary">                    
                     <th>E-mail do Tutor</th>
                     <th>Telefone do Tutor</th>
+                    <th>Município de tutoria</th>
                     <th>Período Inicial</th>
                     <th>Período Fim</th>
                     </thead
                     <tbody>
+                        <?php 
+                        function vemdata($qqdata){
+                            $tempdata=substr($qqdata,8,2).'/'.
+                                      substr($qqdata,5,2).'/'.
+                                      substr($qqdata,0,4);
+                            return($tempdata);
+                        }                       
+                        ?>
                         <tr>
                         <?php foreach ($controle as $value): ?>                            
                             <?php foreach ($ctrlEmail as $mail): ?>
                                 <td class="font-weight-bold"><?= $mail->email; ?></td>
-                                <td class="font-weight-bold"><?php $fone = $mail->fone_zap;
-                                    $fone = str_replace("+", "", $fone);
+                                <td class="font-weight-bold"><?php $fone = $mail->fone_zap;                                    
+                                    $fone = str_replace("+", "", $fone);                                   
                                     $fone = str_replace(" ", "", $fone);
                                     $fone = str_replace("(", "", $fone);
                                     $fone = str_replace(")", "", $fone);
                                   echo Mask("(##)#####-####",$fone);
                                 ?></td>
+                                <td class="font-weight-bold"><?= $mail->Municipio; ?></td>
                             <?php endforeach; ?>
-                                <td class="font-weight-bold"><?= $value->PeriodoInicial; ?></td>
-                                <td class="font-weight-bold"><?= $value->PeriodoFinal; ?></td>
+                                <td class="font-weight-bold"><?= vemdata($value->PeriodoInicial) ?></td>
+                                <td class="font-weight-bold"><?= vemdata($value->PeriodoFinal) ?></td>
                         <?php endforeach; ?>
                         </tr>
                     </tbody>

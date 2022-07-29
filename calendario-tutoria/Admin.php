@@ -36,7 +36,7 @@ require __DIR__ . "/../vendor/autoload.php";
             </div>
             <p>
                 <a href="logout.php" class="btn btn-outline-danger">Sair</a>
-                <a href="cadValorCombustivel.php" class="btn btn-outline-success">Calcular valor de deslocamento</a>
+                <!--<a href="cadValorCombustivel.php" class="btn btn-outline-success">Calcular valor de deslocamento</a>-->
             </p>
         </div>
         <?php

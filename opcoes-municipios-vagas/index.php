@@ -15,12 +15,13 @@ $idMedico = $_SESSION['idMed'];
 //var_dump($codUf);
 $Modelouf = new Source\Models\Estado();
 $uf = $Modelouf->all();
-$estado = $uf->cod_uf;
+
 //var_dump($estado);
 
 
 #definindo as variáveis
 $opc1 = $opc2 = $opc3 = $idMed = "";
+$opcestado = 0;
 if($_SERVER['REQUEST_METHOD'] == "POST"){
     if(!empty($_POST['opc1'])){
         $opc1 = $_POST['opc1'];
@@ -31,9 +32,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     if(!empty($_POST['opc3'])){
         $opc3 = $_POST['opc3'];
     }
-
-    $crudProcedure->CallProcedure($idMedico,$opc1,$opc2,$opc3);
-    header("Location:index.php");
+    if(!empty($_POST['estado'])){
+        $opcestado = $_POST['estado'];
+    }
+    var_dump($opcestado);
+    //$crudProcedure->CallProcedure($idMedico,$opc1,$opc2,$opc3);
+    //header("Location:index.php");
 }
 //var_dump($idMedico,$idMedVaga);
 ?>
@@ -73,7 +77,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     <div class="container-fluid" id="container-central">
         <h1 class="text-center mb-5">
             <?php
-            $ufEscolhida = "";
+            $ufEscolhida = $opcestado;
             switch ($ufEscolhida){
                 case 11:
                     echo "Rondônia";
@@ -460,6 +464,18 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
 
     </div>
+    <script type="text/javascript">
+        document.getElementById("estado").onchange = function () {
 
+        var campo_select = document.getElementById("estado");
+        var indice_selecionado = campo_select.options.selectedIndex;
+        var valor_selecionado = campo_select.options[indice_selecionado].innerHTML;
+        console.log(valor_selecionado);
+        //document.getElementById("escolaridade_selecionada").innerHTML = valor_selecionado;
+
+    };
+
+    };
+    </script>
 </body>
 </html>

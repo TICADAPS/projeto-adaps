@@ -1,14 +1,12 @@
 <?php
-
 namespace Source\Models;
-
 use Source\Core\Model;
 
 /**
  * Class UserModel
  * @package Source\Models
  */
-class VagaTutoria extends Model
+class VagaTutor extends Model
 {
 /** @var array $safe no update or create */
 protected static $safe = ["idVaga", "created_at", "updated_at"];
@@ -18,19 +16,18 @@ protected static $entity = "vaga_tutoria";
 
 /** @var array $required table fileds */
 protected static $required = [
- "idVaga",
- "idMedico",
- "opcao1",   
- "opcao2",   
- "opcao3",   
- "opcao_escolhida",
- "idTutor",
- "munic_origem",
- "uf_origem",
- "munic_escolhido",
- "uf_escolhida",
- "distancia"
-];
+    "idMedico",
+    "opcao1",   
+    "opcao2",   
+    "opcao3",   
+    "opcao_escolhida",
+    "idTutor",
+    "munic_origem",
+    "uf_origem",
+    "munic_escolhido",
+    "uf_escolhida",
+    "distancia"
+    ];
 
 public function bootstrap(
  int $idMedico,
@@ -44,7 +41,7 @@ public function bootstrap(
  string $munDestino,
  string $ufDestino,
  int $distancia
-): ?VagaTutoria {
+): ?VagaTutor {
 $this->idMedico = $idMedico;
 $this->opcao1 = $opcao1;
 $this->opcao2 = $opcao2;
@@ -59,7 +56,7 @@ $this->distancia = $distancia;
 return $this;
 }
 
-public function load(int $id, string $columns = "*"): ?VagaTutoria
+public function load(int $id, string $columns = "*"): ?VagaTutor
 {
 $load = $this->read("SELECT {$columns} FROM " . self::$entity . " WHERE idVaga = :id", "id={$id}");
 if ($this->fail() ||!$load->rowCount()) {
@@ -74,7 +71,7 @@ return $load->fetchObject(__CLASS__);
  * @param string $columns
  * @return null|User
  */
-public function find(string $terms, string $params, string $columns = "*"): ?VagaTutoria
+public function find(string $terms, string $params, string $columns = "*"): ?VagaTutor
 {
 $find = $this->read("SELECT {$columns} FROM " . self::$entity . " WHERE {$terms}", $params);
 if ($this->fail() ||!$find->rowCount()) {
@@ -83,13 +80,15 @@ return null;
 return $find->fetchObject(__CLASS__);
 }
 
-
-public function findById(int $id, string $columns = "*"): ?VagaTutoria
+/**
+ * @param int $id
+ * @param string $columns
+ * @return null|User
+ */
+public function findById(int $id, string $columns = "*"): ?VagaTutor
 {
 return $this->find("idVaga = :id", "id={$id}", $columns);
 }
-
-
 
 /**
  * @param int $limit
@@ -111,13 +110,12 @@ return $all->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 /**
  * @return null|User
  */
-public function save(): ?VagaTutoria
+public function save(): ?VagaTutor
 {
 
 /** User Update */
 if (!empty($this->id)) {
 $userId = $this->id;
-
 
 $this->update(self::$entity, $this->safe(), "idVaga = :id", "id={$userId}");
 if ($this->fail()) {
@@ -143,7 +141,7 @@ return $this;
 /**
  * @return null|User
  */
-public function destroy(): ?VagaTutoria
+public function destroy(): ?VagaTutor
 {
 if (!empty($this->id)) {
 $this->delete(self::$entity, "idVaga = :id", "id={$this->id}");

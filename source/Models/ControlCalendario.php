@@ -72,7 +72,7 @@ return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 }
 public function joinsBolsista(int $idBolsista): ?array
 {
-    $joins = $this->read("select med.NomeMedico, mun.Municipio, ct.PeriodoInicial, ct.PeriodoFinal 
+    $joins = $this->read("select med.NomeMedico, mun.Municipio, ct.PeriodoInicial, ct.PeriodoFinal, vt.distancia 
     from medico med
     inner join controlecalendario cc on med.idMedico = cc.idMedico
     inner join calendariotutoria ct on cc.idCalendario = ct.idCalendario

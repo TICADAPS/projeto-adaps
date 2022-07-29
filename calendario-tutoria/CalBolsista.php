@@ -9,7 +9,7 @@ fullStackPHPClassName("Calendário Tutoria");
 require __DIR__ . "/../source/autoload.php";
 
 $idBolsista = $_SESSION['idMed'];
-//var_dump($idBolsista);
+var_dump($idBolsista);
 ?>
 <!DOCTYPE html>
 <html>
@@ -37,6 +37,9 @@ $idBolsista = $_SESSION['idMed'];
                         <p><h3 class="text-center"></h3></p>                    
                         <?php
                         echo "<p class='text-center'>Seja bem-vindo <b>" . $_SESSION['nome'] . "</b></p>";
+                        if(isset($_SESSION['msg'])){
+                            echo $_SESSION['msg'];
+                        }
                         ?>
 
                     </div>
@@ -51,17 +54,21 @@ $idBolsista = $_SESSION['idMed'];
                 $modelMedico = new \Source\Models\Medico();
                 $modelControle = new \Source\Models\ControlCalendario();
                 $modelCntrlEmail = new \Source\Models\ControlCalendario();                               
-                $modeloMunicipio = new Source\Models\Municipio();
+                $modeloMunicipio = new \Source\Models\Municipio();
+                $modelCombustivel = new \Source\Models\Combustivel();
                 
                 $user = $modelMedico->find("idMedico=:id", "id=$idBolsista");
                 $idMedBolsista = $modelControle->find("idMedico=:id", "id=$idBolsista");
-                $idControleBolsista = $idMedBolsista->idControle;
-                //var_dump($idControleBolsista);
-                
+                $idControleBolsista = $idMedBolsista->idControle;             
                 $controle = $modelControle->joinsBolsista($idBolsista);
                 $ctrlEmail = $modelCntrlEmail->joinsEmailTutor($idBolsista);
-                
-
+                $Combustivel = $modelCombustivel->findById(1);
+                $flagCiencia = $modelControle->findById($idControleBolsista);
+                $ciencia = $flagCiencia->FlagCienciaPortaria;
+                //var_dump($controle);
+                $valor = ($Combustivel->valor);
+                $fator = ($Combustivel->fator);
+                              
                 function Mask($mask, $str) {
                     $str = str_replace("55", "", $str);
                     for ($i = 0; $i < strlen($str); $i++) {
@@ -109,7 +116,12 @@ $idBolsista = $_SESSION['idMed'];
                                 <h4 class="border border-dark">Dados do médico</h4>
                                 <ul class="ml-3">
                                 <?php endforeach;
-                                $distancia = 501; ?>
+                                $distancia = $value->distancia; 
+                                
+                                $calculo = $distancia * $valor * $fator;
+                                $calculo = str_replace('.', ',', number_format($calculo,2));
+                                
+                                ?>
                                 <li class="font-weight-bold">Local de Origem:</li>
                                 <?= $value->Municipio; ?>
                                 <li class="font-weight-bold">Período Inicial de tutoria:</li>
@@ -119,7 +131,7 @@ $idBolsista = $_SESSION['idMed'];
                                 <li class="font-weight-bold">Distância em KM:</li>
                                 <?= $distancia ?>
                                 <li class="font-weight-bold">Valor de deslocamento:</li>
-                                <?= "R$" ?>
+                                <?= "R$ ".$calculo ?>
                         <?php endforeach; ?>
                         </ul>
                     </div>
@@ -209,10 +221,14 @@ $idBolsista = $_SESSION['idMed'];
                             </div>
                         </div>
                     </div>
+                    <?php if($ciencia == '1'): ?>
+                    <a href="satisfacao.php" class="btn btn-primary btn-lg btn-block px-5">Avaliar</a>
+                    <?php else: ?>
                     <div class="row mt-3">
                         <input type="submit" class="btn btn-success btn-lg px-5">
                         <a href="logout.php" class="btn btn-danger btn-lg btn-block px-5">Cancelar</a>
-                    </div>
+                    </div>                    
+                    <?php endif; ?>
                 </form>
             </div>   
             <?php
@@ -260,7 +276,10 @@ $idBolsista = $_SESSION['idMed'];
                 $controleCalend->DataCreate = $hoje;
                 
                 if($flag5 == 1){
+                    $_SESSION['msg'] = "<h3 class='text-center text-success'>Dados enviados com sucesso</h3>";
                     $controleCalend->Atualizar($idControleCalendario);
+                    echo "<META HTTP-EQUIV='REFRESH' CONTENT=\"0;
+                                            URL='CalBolsista.php'\">";
                 }else{
                      echo "<script>alert('Você deve marcar: \'Declaro que estou ciente dos termos da portaria xxx\') ')</script>";
                 }

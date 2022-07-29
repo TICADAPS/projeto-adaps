@@ -61,7 +61,7 @@ return $find->fetchObject(__CLASS__);
 
 public function findById(int $id, string $columns = "*"): ?VagaTutoria
 {
-return $this->find("idTutor = :id", "id={$id}", $columns);
+return $this->find("idVaga = :id", "id={$id}", $columns);
 }
 
 /**

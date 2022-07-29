@@ -37,7 +37,7 @@ class Crud extends Conexao {
 
     public function CallProcedure($id, $opc1, $opc2, $opc3) {
         define('SERVER', 'localhost');
-        define('DBNAME', 'tic_adaps');
+        define('DBNAME', 'medicosdataapresentacao');
         define('USER', 'root');
         define('PASSWORD', '');
         try {
@@ -62,7 +62,7 @@ class Crud extends Conexao {
 
     public function CallRemanejar($id, $opc) {
         define('SERVER', 'localhost');
-        define('DBNAME', 'tic_adaps');
+        define('DBNAME', 'medicosdataapresentacao');
         define('USER', 'root');
         define('PASSWORD', '');
         try {
@@ -139,7 +139,7 @@ class Crud extends Conexao {
                         $this->Crud->bindValue(":id", $id);
                         $this->Crud->execute();
                         if ($this->Crud->rowCount() == 1) {
-                            header("Location:../CalBolsista.php"); exit();
+                            header("Location:../index.php"); exit();
                         } else {
                             $_SESSION['loginErro'] = "<b>O acesso para este CPF ainda não está liberado</b>";
                             header("Location:../login.php");

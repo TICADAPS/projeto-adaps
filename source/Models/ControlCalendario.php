@@ -16,15 +16,30 @@ protected static $entity = "controlecalendario";
 /** @var array $required table fileds */
 protected static $required = [
  "FlagRealizouTutoria",
- "JustificativaTutoria"
+ "JustificativaTutoria",
+ "FlagDisponibilidade",   
+ "FlagSolicitaPassagem",   
+ "FlagDispensaHospedagem",   
+ "FlagTermoResponsabilidade",   
+ "FlagCienciaPortaria"   
 ];
 
 public function bootstrap(
  string $FlagRealizouTutoria,
- string $JustificativaTutoria
+ string $JustificativaTutoria,
+ int $FlagDisponibilidade,    
+ int $FlagSolicitaPassagem,    
+ int $FlagDispensaHospedagem,    
+ int $FlagTermoResponsabilidade,    
+ int $FlagCienciaPortaria    
 ): ?ControlCalendario {
 $this->FlagRealizouTutoria = $FlagRealizouTutoria;
 $this->JustificativaTutoria = $JustificativaTutoria;
+$this->FlagDisponibilidade = $FlagDisponibilidade;
+$this->FlagSolicitaPassagem = $FlagSolicitaPassagem;
+$this->FlagDispensaHospedagem = $FlagDispensaHospedagem;
+$this->FlagTermoResponsabilidade = $FlagTermoResponsabilidade;
+$this->FlagCienciaPortaria = $FlagCienciaPortaria;
 return $this;
 }
 
@@ -57,27 +72,30 @@ return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 }
 public function joinsBolsista(int $idBolsista): ?array
 {
-$joins = $this->read("select med.NomeMedico, ct.PeriodoInicial, ct.PeriodoFinal 
-from medico med
-inner join controlecalendario cc on med.idMedico = cc.idMedico
-inner join calendariotutoria ct on cc.idCalendario = ct.idCalendario
-inner join vaga_tutoria vt on vt.idMedico = cc.idMedico
-where vt.idMedico ={$idBolsista};");
-if ($this->fail() ||!$joins->rowCount()) {
-$this->message = "Usuário não encontrado para o id informado";
-return null;
+    $joins = $this->read("select med.NomeMedico, mun.Municipio, ct.PeriodoInicial, ct.PeriodoFinal 
+    from medico med
+    inner join controlecalendario cc on med.idMedico = cc.idMedico
+    inner join calendariotutoria ct on cc.idCalendario = ct.idCalendario
+    inner join vaga_tutoria vt on vt.idMedico = cc.idMedico
+    inner join municipio mun on mun.cod_munc = med.Municipio_id
+    where vt.idMedico ={$idBolsista};");
+    if ($this->fail() ||!$joins->rowCount()) {
+    $this->message = "Usuário não encontrado para o id informado";
+    return null;
 }
-return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 
 }
 public function joinsEmailTutor(int $idBolsista): ?array
 {
-$joins = $this->read("select medico.email,medico.fone_zap,municipio.Municipio"
-        . " from medico inner join municipio on medico.Municipio_id = municipio.cod_munc"
-        . " where medico.idMedico = "
-        . "(SELECT vaga_tutoria.idTutor from vaga_tutoria "
-        . "INNER JOIN medico_bolsista on vaga_tutoria.idMedico = medico_bolsista.idMedico "
-        . "where medico_bolsista.idMedico = $idBolsista);");
+$joins = $this->read("select medico.NomeMedico, medico.email,medico.fone_zap,municipio.Municipio ,estado.UF
+from medico 
+inner join municipio on medico.Municipio_id = municipio.cod_munc
+inner join estado on medico.Estado_idEstado = estado.cod_uf
+where medico.idMedico = 
+(SELECT vaga_tutoria.idTutor from vaga_tutoria 
+INNER JOIN medico_bolsista on vaga_tutoria.idMedico = medico_bolsista.idMedico 
+where medico_bolsista.idMedico =  $idBolsista);");
 
 if ($this->fail() ||!$joins->rowCount()) {
 $this->message = "Usuário não encontrado para o id informado";

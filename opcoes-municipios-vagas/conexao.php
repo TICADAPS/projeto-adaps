@@ -2,7 +2,7 @@
 $servidor = "localhost";
 $usuario = "root";
 $senha = "";
-$dbname = "tic_adaps";
+$dbname = "medicosdataapresentacao";
 
 //Criar a conexao
 $conn = mysqli_connect($servidor, $usuario, $senha, $dbname);

@@ -9,7 +9,7 @@ fullStackPHPClassName("Calendário Tutoria");
 require __DIR__ . "/../source/autoload.php";
 
 $idBolsista = $_SESSION['idMed'];
-var_dump($idBolsista);
+//var_dump($idBolsista);
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,7 +21,7 @@ var_dump($idBolsista);
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -195,7 +195,10 @@ var_dump($idBolsista);
                     <div class="form-check border border-dark py-2">                            
                         <label class="form-check-label pb-5 ml-3" for="check4">    
                             <p><b>Art. 15</b>  - Para os médicos que farão o deslocamento em carro próprio, deverão assinar um termo de responsabilidade  no sistema a ser disponibilizado.
-                                <a href="#"> Clique aqui para acessar o termo.</a> 
+                                 
+                            <button type="button" class="btn btn-primary form-control mt-2" data-toggle="modal" data-target="#modalAltera">
+                             Clique aqui para acessar o termo.
+                            </button>
                             </p>                            
                         </label>
                         <div class="row my-2">
@@ -208,9 +211,9 @@ var_dump($idBolsista);
                         </div>
                     </div>
                     <div class="form-check border border-dark py-2">    
-                        <div class="form-check">    
-                            <a href="#"> Link de acesso a Portaria que versa sobre translados e hospedagens.</a>
-                        </div>
+                        <div class="form-check"> 
+                            <a href="#">Link de acesso a Portaria que versa sobre translados e hospedagens.</a>
+                         </div>
                         
                         <div class="row my-2">
                             <div class="col-1">                                                  
@@ -229,6 +232,30 @@ var_dump($idBolsista);
                         <a href="logout.php" class="btn btn-danger btn-lg btn-block px-5">Cancelar</a>
                     </div>                    
                     <?php endif; ?>
+                    <!-- modalOprSim de confirmação de apresentação do médico -->
+                            <div class="modal fade" id="modalAltera" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header bg-primary">
+                                      <h5 class="modal-title text-light" id="exampleModalLabel">
+                                          <p>TERMO DE RESPONSABILIDADE DE DESLOCAMENTO COM VEÍCULO PRÓPRIO</p> 
+                                          <p>MÉDICOS BOLSISTAS</p>
+
+                                      </h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label for="date-apresentacao" class="text-justify">
+                                            <p>Pelo presente venho manifestar minha opção por viajar em veículo/condução de minha propriedade ou fretado de terceiros por minha livre e espontânea vontade, objetivando comodidade, dispensando, assim, a passagem ou outro tipo de transporte desta Agência colocado à minha disposição.</p>
+                                            <p>Assumo, pelo presente, total e integral responsabilidade por quaisquer ocorrências, acidentes de trânsito ou quaisquer outros, caso venham a acontecer no deslocamento informado, ficando a ADAPS – Agência de Desenvolvimento da Atenção Primária à Saúde, totalmente isentas de quaisquer pagamentos, ônus ou responsabilidades por possíveis danos materiais, à minha pessoa ou à terceiros durante a viagem.</p>
+                                        </label>                                        
+                                    </div>                                    
+                                  </div>
+                                </div>
+                              </div>
+                            <!-- fim do modalOprSim de confirmação de apresentação do médico -->
                 </form>
             </div>   
             <?php

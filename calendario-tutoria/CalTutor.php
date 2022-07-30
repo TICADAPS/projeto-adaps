@@ -106,6 +106,7 @@ $idTutor = $_SESSION['idMed'];
                             $fone = str_replace("(", "", $fone);
                             $fone = str_replace(")", "", $fone);
                             echo Mask("(##)#####-####", $fone);
+
                             ?>
                         </td>
                         <td><?= vemdata($calData->PeriodoInicial) ?></td>
@@ -222,7 +223,15 @@ $idTutor = $_SESSION['idMed'];
                         nas datas designadas, deverão ser reportadas à ADAPS através do e-mail 
                         <b>ensino@adapsbrasil.com.br</b></i> 
                 </div>
-                <p><a href="logout.php" class="btn btn-danger btn-lg px-5">Sair</a></p>
+                <div class="row">
+                    <div class="col-4">
+                        <p><a href="logout.php" class="btn btn-danger btn-lg px-5">Sair</a></p>
+                    </div>
+                    <div class="col-4">
+                        <p><a href="satisfacao.php" class="btn btn-primary btn-lg px-5">Avaliação</a></p>
+                    </div>
+                </div>
+                
             </div>
         </div>   
         <script>

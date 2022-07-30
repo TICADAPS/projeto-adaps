@@ -37,7 +37,7 @@ $idBolsista = $_SESSION['idMed'];
                         <p><h3 class="text-center"></h3></p>                    
                         <?php
                         echo "<p class='text-center'>Seja bem-vindo <b>" . $_SESSION['nome'] . "</b></p>";
-                        if(isset($_SESSION['msg'])){
+                        if (isset($_SESSION['msg'])) {
                             echo $_SESSION['msg'];
                         }
                         ?>
@@ -53,13 +53,14 @@ $idBolsista = $_SESSION['idMed'];
                 <?php
                 $modelMedico = new \Source\Models\Medico();
                 $modelControle = new \Source\Models\ControlCalendario();
-                $modelCntrlEmail = new \Source\Models\ControlCalendario();                               
+                $modelCntrlEmail = new \Source\Models\ControlCalendario();
                 $modeloMunicipio = new \Source\Models\Municipio();
                 $modelCombustivel = new \Source\Models\Combustivel();
-                
+
                 $user = $modelMedico->find("idMedico=:id", "id=$idBolsista");
                 $idMedBolsista = $modelControle->find("idMedico=:id", "id=$idBolsista");
-                $idControleBolsista = $idMedBolsista->idControle;             
+                $idControleBolsista = $idMedBolsista->idControle;
+                var_dump($idControleBolsista);
                 $controle = $modelControle->joinsBolsista($idBolsista);
                 $ctrlEmail = $modelCntrlEmail->joinsEmailTutor($idBolsista);
                 $Combustivel = $modelCombustivel->findById(1);
@@ -68,7 +69,7 @@ $idBolsista = $_SESSION['idMed'];
                 //var_dump($controle);
                 $valor = ($Combustivel->valor);
                 $fator = ($Combustivel->fator);
-                              
+
                 function Mask($mask, $str) {
                     $str = str_replace("55", "", $str);
                     for ($i = 0; $i < strlen($str); $i++) {
@@ -106,21 +107,36 @@ $idBolsista = $_SESSION['idMed'];
                                     $fone = str_replace(" ", "", $fone);
                                     $fone = str_replace("(", "", $fone);
                                     $fone = str_replace(")", "", $fone);
-                                    echo Mask("(##)#####-####", $fone);
+
+                                    //echo Mask("(##)#####-####", $fone);
+                                    function formataTelefone($numero) {
+                                        if (strlen($numero) == 13) {
+                                            $novo = substr_replace($numero, '(', 2, 0);                                        
+                                            $novo = substr_replace($novo, ')', 5, 0);
+                                            $novo = substr_replace($novo, '-', 11, 0);
+                                        } else {
+                                            $novo = substr_replace($numero, '(', 0, 0);
+                                            $novo = substr_replace($novo, ')', 3, 0);
+                                            $novo = substr_replace($novo, '-', 9, 0);
+                                        }
+                                        return $novo;
+                                    }
+
+                                    echo formataTelefone($fone);
                                     ?>
                                     <li class="font-weight-bold">Local de Tutoria:</li>
-                                    <?= $mail->Municipio; ?> - <?= $mail->UF; ?>
+        <?= $mail->Municipio; ?> - <?= $mail->UF; ?>
                                 </ul>
                             </div>
                             <div class="col-md-6 col-12">
                                 <h4 class="border border-dark">Dados do médico</h4>
                                 <ul class="ml-3">
-                                <?php endforeach;
-                                $distancia = $value->distancia; 
-                                
+                                    <?php
+                                endforeach;
+                                $distancia = $value->distancia;
+
                                 $calculo = $distancia * $valor * $fator;
-                                $calculo = str_replace('.', ',', number_format($calculo,2));
-                                
+                                $calculo = str_replace('.', ',', number_format($calculo, 2));
                                 ?>
                                 <li class="font-weight-bold">Local de Origem:</li>
                                 <?= $value->Municipio; ?>
@@ -131,14 +147,14 @@ $idBolsista = $_SESSION['idMed'];
                                 <li class="font-weight-bold">Distância em KM:</li>
                                 <?= $distancia ?>
                                 <li class="font-weight-bold">Valor de deslocamento:</li>
-                                <?= "R$ ".$calculo ?>
-                        <?php endforeach; ?>
+    <?= "R$ " . $calculo ?>
+<?php endforeach; ?>
                         </ul>
                     </div>
                 </div>
 
                 <h4 class="bg-dark py-3 text-light text-center">Itens a serem optados de acordo com a portaria que versa sobre deslocamento em tutorias</h4>
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <input type="hidden" name="idBolsista" value="<?= $idControleBolsista; ?>">
                     <div class="form-check border border-dark py-2">    
                         <label class="form-check-label" for="check1">
@@ -160,13 +176,13 @@ $idBolsista = $_SESSION['idMed'];
                         </p>                
 
                     </div>
-                    <?php if ($distancia > 500): ?>
+<?php if ($distancia > 500): ?>
                         <div class="form-check border border-dark py-2">    
                             <label class="form-check-label" for="check2">
-                            <p><b>Art.  5º</b>  Nos casos em que a distância entre os municípios for superior a 500 km (quinhentos quilômetros), o médico bolsista poderá optar por:</p>
-                            <p>I - receber o recurso financeiro de subsídio ao seu traslado, de acordo com os parâmetros desta Portaria;</p>
-                            <p>II - receber as passagens de ida e volta, adquiridas pela ADAPS, desde que a agência contratada, consiga garantir a contratação dos serviços, de forma que  a escolha do meio de transporte venha de encontro  aos princípios  da vantajosidade e  economicidade.</p>
-                            <p>§  1º O médico bolsista deverá informar a ADAPS, em sistema a ser disponibilizado pela Agência, apenas nos casos em que optar pela alternativa descrita no inciso II deste artigo.</p>
+                                <p><b>Art.  5º</b>  Nos casos em que a distância entre os municípios for superior a 500 km (quinhentos quilômetros), o médico bolsista poderá optar por:</p>
+                                <p>I - receber o recurso financeiro de subsídio ao seu traslado, de acordo com os parâmetros desta Portaria;</p>
+                                <p>II - receber as passagens de ida e volta, adquiridas pela ADAPS, desde que a agência contratada, consiga garantir a contratação dos serviços, de forma que  a escolha do meio de transporte venha de encontro  aos princípios  da vantajosidade e  economicidade.</p>
+                                <p>§  1º O médico bolsista deverá informar a ADAPS, em sistema a ser disponibilizado pela Agência, apenas nos casos em que optar pela alternativa descrita no inciso II deste artigo.</p>
                             </label>
                             <div class="row my-2">
                                 <div class="col-1">
@@ -177,7 +193,7 @@ $idBolsista = $_SESSION['idMed'];
                                 </div>
                             </div>
                         </div>
-                    <?php endif; ?>
+<?php endif; ?>
                     <div class="form-check border border-dark py-2">  
                         <label class="form-check-label pb-5 ml-3" for="check3">     
                             <p><b>Art. 10</b> Caso o médico bolsista não necessite da contratação de local de hospedagem no município onde realiza a tutoria clínica, deverá informar a ADAPS em até 15 (quinze) dias antes da data prevista para o deslocamento, em sistema a ser disponibilizado pela Agência.</p>                          
@@ -195,10 +211,10 @@ $idBolsista = $_SESSION['idMed'];
                     <div class="form-check border border-dark py-2">                            
                         <label class="form-check-label pb-5 ml-3" for="check4">    
                             <p><b>Art. 15</b>  - Para os médicos que farão o deslocamento em carro próprio, deverão assinar um termo de responsabilidade  no sistema a ser disponibilizado.
-                                 
-                            <button type="button" class="btn btn-primary form-control mt-2" data-toggle="modal" data-target="#modalAltera">
-                             Clique aqui para acessar o termo.
-                            </button>
+
+                                <button type="button" class="btn btn-primary form-control mt-2" data-toggle="modal" data-target="#modalAltera">
+                                    Clique aqui para acessar o termo.
+                                </button>
                             </p>                            
                         </label>
                         <div class="row my-2">
@@ -213,8 +229,8 @@ $idBolsista = $_SESSION['idMed'];
                     <div class="form-check border border-dark py-2">    
                         <div class="form-check"> 
                             <a href="#">Link de acesso a Portaria que versa sobre translados e hospedagens.</a>
-                         </div>
-                        
+                        </div>
+
                         <div class="row my-2">
                             <div class="col-1">                                                  
                                 <input type="checkbox" class="form-check-input" name="flagCienciaPortaria" value="1"> 
@@ -224,72 +240,72 @@ $idBolsista = $_SESSION['idMed'];
                             </div>
                         </div>
                     </div>
-                    <?php if($ciencia == '1'): ?>
-                    <a href="satisfacao.php" class="btn btn-primary btn-lg btn-block px-5">Avaliar</a>
-                    <?php else: ?>
-                    <div class="row mt-3">
-                        <input type="submit" class="btn btn-success btn-lg px-5">
-                        <a href="logout.php" class="btn btn-danger btn-lg btn-block px-5">Cancelar</a>
-                    </div>                    
-                    <?php endif; ?>
+                    <?php if ($ciencia == '1'): ?>
+                        <a href="satisfacao.php" class="btn btn-primary btn-lg btn-block px-5">Avaliar</a>
+<?php else: ?>
+                        <div class="row mt-3">
+                            <input type="submit" class="btn btn-success btn-lg px-5">
+                            <a href="logout.php" class="btn btn-danger btn-lg btn-block px-5">Cancelar</a>
+                        </div>                    
+<?php endif; ?>
                     <!-- modalOprSim de confirmação de apresentação do médico -->
-                            <div class="modal fade" id="modalAltera" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                  <div class="modal-content">
-                                    <div class="modal-header bg-primary">
-                                      <h5 class="modal-title text-light" id="exampleModalLabel">
-                                          <p>TERMO DE RESPONSABILIDADE DE DESLOCAMENTO COM VEÍCULO PRÓPRIO</p> 
-                                          <p>MÉDICOS BOLSISTAS</p>
+                    <div class="modal fade" id="modalAltera" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary">
+                                    <h5 class="modal-title text-light" id="exampleModalLabel">
+                                        <p>TERMO DE RESPONSABILIDADE DE DESLOCAMENTO COM VEÍCULO PRÓPRIO</p> 
+                                        <p>MÉDICOS BOLSISTAS</p>
 
-                                      </h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
-                                      </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <label for="date-apresentacao" class="text-justify">
-                                            <p>Pelo presente venho manifestar minha opção por viajar em veículo/condução de minha propriedade ou fretado de terceiros por minha livre e espontânea vontade, objetivando comodidade, dispensando, assim, a passagem ou outro tipo de transporte desta Agência colocado à minha disposição.</p>
-                                            <p>Assumo, pelo presente, total e integral responsabilidade por quaisquer ocorrências, acidentes de trânsito ou quaisquer outros, caso venham a acontecer no deslocamento informado, ficando a ADAPS – Agência de Desenvolvimento da Atenção Primária à Saúde, totalmente isentas de quaisquer pagamentos, ônus ou responsabilidades por possíveis danos materiais, à minha pessoa ou à terceiros durante a viagem.</p>
-                                        </label>                                        
-                                    </div>                                    
-                                  </div>
+                                    </button>
                                 </div>
-                              </div>
-                            <!-- fim do modalOprSim de confirmação de apresentação do médico -->
+                                <div class="modal-body">
+                                    <label for="date-apresentacao" class="text-justify">
+                                        <p>Pelo presente venho manifestar minha opção por viajar em veículo/condução de minha propriedade ou fretado de terceiros por minha livre e espontânea vontade, objetivando comodidade, dispensando, assim, a passagem ou outro tipo de transporte desta Agência colocado à minha disposição.</p>
+                                        <p>Assumo, pelo presente, total e integral responsabilidade por quaisquer ocorrências, acidentes de trânsito ou quaisquer outros, caso venham a acontecer no deslocamento informado, ficando a ADAPS – Agência de Desenvolvimento da Atenção Primária à Saúde, totalmente isentas de quaisquer pagamentos, ônus ou responsabilidades por possíveis danos materiais, à minha pessoa ou à terceiros durante a viagem.</p>
+                                    </label>                                        
+                                </div>                                    
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fim do modalOprSim de confirmação de apresentação do médico -->
                 </form>
             </div>   
             <?php
-            $flag1=$flag2=$flag3=$flag4=$flag5 = 0;
+            $flag1 = $flag2 = $flag3 = $flag4 = $flag5 = 0;
             $idControleCalendario = 0;
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                if(!empty($_POST['flagDisponibilidade'])){
+                if (!empty($_POST['flagDisponibilidade'])) {
                     $flag1 = $_POST['flagDisponibilidade'];
-                }else{
+                } else {
                     $flag1 = 0;
                 }
-                if(!empty($_POST['flagSolicitaPassagem'])){
+                if (!empty($_POST['flagSolicitaPassagem'])) {
                     $flag2 = $_POST['flagSolicitaPassagem'];
-                }else{
+                } else {
                     $flag2 = 0;
                 }
-                if(!empty($_POST['flagDispensaHospedagem'])){
+                if (!empty($_POST['flagDispensaHospedagem'])) {
                     $flag3 = $_POST['flagDispensaHospedagem'];
-                }else{
+                } else {
                     $flag3 = 0;
                 }
-                if(!empty($_POST['flagTermoResponsabilidade'])){
+                if (!empty($_POST['flagTermoResponsabilidade'])) {
                     $flag4 = $_POST['flagTermoResponsabilidade'];
-                }else{
+                } else {
                     $flag4 = 0;
                 }
-                if(!empty($_POST['flagCienciaPortaria'])){
+                if (!empty($_POST['flagCienciaPortaria'])) {
                     $flag5 = $_POST['flagCienciaPortaria'];
-                }else{
+                } else {
                     $flag5 = 0;
                 }
-                if(!empty($_POST['idBolsista'])){
+                if (!empty($_POST['idBolsista'])) {
                     $idControleCalendario = $_POST['idBolsista'];
-                }else{
+                } else {
                     $idControleCalendario = 0;
                 }
                 $data = new DateTime();
@@ -301,17 +317,16 @@ $idBolsista = $_SESSION['idMed'];
                 $controleCalend->flagTermoResponsabilidade = $flag4;
                 $controleCalend->flagCienciaPortaria = $flag5;
                 $controleCalend->DataCreate = $hoje;
-                
-                if($flag5 == 1){
+
+                if ($flag5 == 1) {
                     $_SESSION['msg'] = "<h3 class='text-center text-success'>Dados enviados com sucesso</h3>";
                     $controleCalend->Atualizar($idControleCalendario);
                     echo "<META HTTP-EQUIV='REFRESH' CONTENT=\"0;
                                             URL='CalBolsista.php'\">";
-                }else{
-                     echo "<script>alert('Você deve marcar: \'Declaro que estou ciente dos termos da portaria xxx\') ')</script>";
+                } else {
+                    echo "<script>alert('Você deve marcar: \'Declaro que estou ciente dos termos da portaria xxx\') ')</script>";
                 }
-            }    
-            
+            }
             ?>
         </div>
     </body>

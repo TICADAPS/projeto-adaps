@@ -1,4 +1,4 @@
- {
+{
     "name": "marcelo.farias_adaps/07-recursos-e-componentes",
     "description": "Formação Full Stack PHP Developer",    
     "authors": [
@@ -25,6 +25,7 @@
         "coffeecode/uploader": "^1.0",
         "coffeecode/cropper": "1.0.*",
         "coffeecode/optimizer": "^1.0",
-        "coffeecode/paginator": "^1.0"
+        "coffeecode/paginator": "^1.0",
+        "dompdf/dompdf": "^1.2"
     }
 }

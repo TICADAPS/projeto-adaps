@@ -34,16 +34,45 @@ require __DIR__ . "/../vendor/autoload.php";
                     </div>
                 </div>
             </div>
-            <p>
-                <a href="logout.php" class="btn btn-outline-danger">Sair</a>
-                <!--<a href="cadValorCombustivel.php" class="btn btn-outline-success">Calcular valor de deslocamento</a>-->
-            </p>
+            
         </div>
         <?php
         $modelControle = new \Source\Models\ControlCalendario();
         $controle = $modelControle->joinsCalendarioTutoria();
+        $remanejar = $modelControle->remanejaBolsista();
         ?>
         <div class="container">
+            <p>
+            <h4 class="text-center bg-primary py-2">Relatórios sugeridos</h4>
+            </p>
+            <p>
+                <a href="logout.php" class="btn btn-outline-danger">Sair</a>
+                <a href="../vendor/relatorio-tutoria.php" target="_blank" class="btn btn-outline-warning">Relatório de bolsistas por tutor</a>
+                <a href="../vendor/relatorio-tutoria_municipio.php" target="_blank" class="btn btn-outline-warning">Relatório de bolsistas por Municípios (PDF)</a>
+                <a href="../vendor/relatorio-tutoria_municipio_planilha.php" target="_blank" class="btn btn-outline-success">Relatório de bolsistas por Municípios (Planilha)</a>
+            </p>
+            <h3 class="text-center bg-warning py-1">Médicos sem calendário de tutoria para remanejar</h3>
+            <table class="border border-primary table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark border border-primary">                    
+                <th>Nome médico</th>
+                <th>Local de origem</th>
+                <th>Local de Tutoria</th>
+                <th>Remanejar</th>            
+                </thead
+                <tbody>
+                <?php foreach ($remanejar as $value): ?> 
+                    <tr>
+                        <td><?= $value->NomeMedico; ?></td>
+                        <td><?= $value->munic_origem; ?></td>
+                        <td><?= $value->munic_escolhido; ?></td>
+                        <td><a href="adicionarData.php?id=<?= $value->idMedico ?>"><i class="fa fa-plus" aria-hidden="true"></i></a></td>
+                    </tr>
+                <?php endforeach; ?>    
+                </tbody>
+            </table>
+        </div>
+        <div class="container">
+            <h3 class="text-center bg-warning py-1">Médicos com calendário de tutoria para alteração</h3>
             <table class="border border-primary table table-hover table-striped table-responsive-sm">
                 <thead class="thead-dark border border-primary">                    
                 <th>Nome médico</th>

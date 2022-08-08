@@ -56,17 +56,18 @@ $idBolsista = $_SESSION['idMed'];
                 $modelCntrlEmail = new \Source\Models\ControlCalendario();
                 $modeloMunicipio = new \Source\Models\Municipio();
                 $modelCombustivel = new \Source\Models\Combustivel();
+                
 
                 $user = $modelMedico->find("idMedico=:id", "id=$idBolsista");
                 $idMedBolsista = $modelControle->find("idMedico=:id", "id=$idBolsista");
                 $idControleBolsista = $idMedBolsista->idControle;
-                var_dump($idControleBolsista);
+                //var_dump($idControleBolsista);
                 $controle = $modelControle->joinsBolsista($idBolsista);
                 $ctrlEmail = $modelCntrlEmail->joinsEmailTutor($idBolsista);
                 $Combustivel = $modelCombustivel->findById(1);
                 $flagCiencia = $modelControle->findById($idControleBolsista);
                 $ciencia = $flagCiencia->FlagCienciaPortaria;
-                //var_dump($controle);
+                var_dump($ciencia);
                 $valor = ($Combustivel->valor);
                 $fator = ($Combustivel->fator);
 
@@ -109,23 +110,10 @@ $idBolsista = $_SESSION['idMed'];
                                     $fone = str_replace(")", "", $fone);
 
                                     //echo Mask("(##)#####-####", $fone);
-                                    function formataTelefone($numero) {
-                                        if (strlen($numero) == 13) {
-                                            $novo = substr_replace($numero, '(', 2, 0);                                        
-                                            $novo = substr_replace($novo, ')', 5, 0);
-                                            $novo = substr_replace($novo, '-', 11, 0);
-                                        } else {
-                                            $novo = substr_replace($numero, '(', 0, 0);
-                                            $novo = substr_replace($novo, ')', 3, 0);
-                                            $novo = substr_replace($novo, '-', 9, 0);
-                                        }
-                                        return $novo;
-                                    }
-
-                                    echo formataTelefone($fone);
+                                    
                                     ?>
                                     <li class="font-weight-bold">Local de Tutoria:</li>
-        <?= $mail->Municipio; ?> - <?= $mail->UF; ?>
+                            <?= $value->munic_escolhido; ?> - <?= $mail->UF; ?>
                                 </ul>
                             </div>
                             <div class="col-md-6 col-12">
@@ -135,11 +123,11 @@ $idBolsista = $_SESSION['idMed'];
                                 endforeach;
                                 $distancia = $value->distancia;
 
-                                $calculo = $distancia * $valor * $fator;
+                                $calculo = $distancia * 2 * ($valor/10) * $fator;
                                 $calculo = str_replace('.', ',', number_format($calculo, 2));
                                 ?>
                                 <li class="font-weight-bold">Local de Origem:</li>
-                                <?= $value->Municipio; ?>
+                                <?= $value->munic_origem; ?>
                                 <li class="font-weight-bold">Período Inicial de tutoria:</li>
                                 <?= vemdata($value->PeriodoInicial) ?>
                                 <li class="font-weight-bold">Período Final de Tutoria:</li>
@@ -147,12 +135,12 @@ $idBolsista = $_SESSION['idMed'];
                                 <li class="font-weight-bold">Distância em KM:</li>
                                 <?= $distancia ?>
                                 <li class="font-weight-bold">Valor de deslocamento:</li>
-    <?= "R$ " . $calculo ?>
-<?php endforeach; ?>
+                                <?= "R$ " . $calculo ?>
+                            <?php endforeach; ?>
                         </ul>
                     </div>
                 </div>
-
+                <?php if($ciencia == 0): ?>
                 <h4 class="bg-dark py-3 text-light text-center">Itens a serem optados de acordo com a portaria que versa sobre deslocamento em tutorias</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <input type="hidden" name="idBolsista" value="<?= $idControleBolsista; ?>">
@@ -176,7 +164,7 @@ $idBolsista = $_SESSION['idMed'];
                         </p>                
 
                     </div>
-<?php if ($distancia > 500): ?>
+                    <?php if ($distancia > 500): ?>
                         <div class="form-check border border-dark py-2">    
                             <label class="form-check-label" for="check2">
                                 <p><b>Art.  5º</b>  Nos casos em que a distância entre os municípios for superior a 500 km (quinhentos quilômetros), o médico bolsista poderá optar por:</p>
@@ -193,7 +181,7 @@ $idBolsista = $_SESSION['idMed'];
                                 </div>
                             </div>
                         </div>
-<?php endif; ?>
+                    <?php endif; ?>
                     <div class="form-check border border-dark py-2">  
                         <label class="form-check-label pb-5 ml-3" for="check3">     
                             <p><b>Art. 10</b> Caso o médico bolsista não necessite da contratação de local de hospedagem no município onde realiza a tutoria clínica, deverá informar a ADAPS em até 15 (quinze) dias antes da data prevista para o deslocamento, em sistema a ser disponibilizado pela Agência.</p>                          
@@ -242,12 +230,12 @@ $idBolsista = $_SESSION['idMed'];
                     </div>
                     <?php if ($ciencia == '1'): ?>
                         <a href="satisfacao.php" class="btn btn-primary btn-lg btn-block px-5">Avaliar</a>
-<?php else: ?>
+                    <?php else: ?>
                         <div class="row mt-3">
                             <input type="submit" class="btn btn-success btn-lg px-5">
                             <a href="logout.php" class="btn btn-danger btn-lg btn-block px-5">Cancelar</a>
                         </div>                    
-<?php endif; ?>
+                    <?php endif; ?>
                     <!-- modalOprSim de confirmação de apresentação do médico -->
                     <div class="modal fade" id="modalAltera" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -273,6 +261,7 @@ $idBolsista = $_SESSION['idMed'];
                     </div>
                     <!-- fim do modalOprSim de confirmação de apresentação do médico -->
                 </form>
+                <?php endif; ?>
             </div>   
             <?php
             $flag1 = $flag2 = $flag3 = $flag4 = $flag5 = 0;

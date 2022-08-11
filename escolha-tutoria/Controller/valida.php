@@ -1,7 +1,7 @@
 <?php
 session_start();
-include '../Class/Crud.php';
-$crud = new Crud();
+include '../Class/CrudEscolha.php';
+$crud = new CrudEscolha();
 
 if((isset($_POST['userCpf']))){
     $cpf = filter_input(INPUT_POST, 'userCpf', FILTER_SANITIZE_SPECIAL_CHARS);

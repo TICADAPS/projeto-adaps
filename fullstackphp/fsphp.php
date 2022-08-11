@@ -30,7 +30,7 @@ ini_set('xdebug.overload_var_dump', 1);
  * [ interface ] Style, icon and logo
  */
 echo "<link rel='stylesheet' href='../fullstackphp/fsphp.css'/>",
-"<link rel='icon' href='../img/iconAdaps.png'/>";;
+"<link rel='icon' href='../img/iconAdaps.png'/>";
 
 
 /**

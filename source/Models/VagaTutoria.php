@@ -68,6 +68,7 @@ return null;
 }
 return $load->fetchObject(__CLASS__);
 }
+
 /**
  * @param string $terms
  * @param string $params
@@ -101,6 +102,37 @@ public function all(int $limit = 30, int $offset = 0, string $columns = "*"): ?a
 {
 $all = $this->read("SELECT {$columns} FROM " . self::$entity . " LIMIT :limit OFFSET :offset",
  "limit={$limit}&offset={$offset}");
+
+if ($this->fail() ||!$all->rowCount()) {
+return null;
+}
+return $all->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+}
+
+public function bolsistas(int $idTutor): ?array
+{
+$all = $this->read("SELECT nome_medico from medico_bolsista mb 
+INNER JOIN vaga_tutoria vt ON vt.idMedico = mb.idMedico
+WHERE vt.idTutor = $idTutor; ");
+
+if ($this->fail() ||!$all->rowCount()) {
+return null;
+}
+return $all->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+}
+
+public function bolsistaComTutor(): ?array
+{
+$all = $this->read("SELECT DISTINCT vt.idMedico,md.NomeMedico, e.UF, mu.Municipio, 
+opc.Municipio as opcaoEscolhia, et.UF as destino
+    FROM vaga_tutoria vt
+    INNER JOIN medico md ON vt.idMedico = md.idMedico
+    INNER JOIN estado e ON e.cod_uf = md.Estado_idEstado                                   
+    INNER JOIN municipio mu ON mu.cod_munc = md.Municipio_id
+    INNER JOIN municipio opc on opc.cod_munc = vt.opcao_escolhida
+    INNER JOIN tutor_municipio tm ON tm.cod_munc = opc.cod_munc
+    INNER JOIN estado et on et.cod_uf = tm.codUf
+ORDER BY md.NomeMedico;");
 
 if ($this->fail() ||!$all->rowCount()) {
 return null;

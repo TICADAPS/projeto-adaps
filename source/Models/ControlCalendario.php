@@ -81,7 +81,7 @@ class ControlCalendario extends Model {
             vt.distancia from medico med
         inner join controlecalendario cc on med.idMedico = cc.idMedico
         inner join calendariotutoria ct on cc.idCalendario = ct.idCalendario
-        inner join vaga_tutoria vt on vt.idMedico = cc.idMedico    
+        inner join vaga_tutoria vt on vt.idMedico = med.idMedico    
         where vt.idMedico ={$idBolsista};");
         if ($this->fail() || !$joins->rowCount()) {
             $this->message = "Usuário não encontrado para o id informado";

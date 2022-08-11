@@ -47,9 +47,12 @@ require __DIR__ . "/../vendor/autoload.php";
             </p>
             <p>
                 <a href="logout.php" class="btn btn-outline-danger">Sair</a>
-                <a href="../vendor/relatorio-tutoria.php" target="_blank" class="btn btn-outline-warning">Relatório de bolsistas por tutor</a>
-                <a href="../vendor/relatorio-tutoria_municipio.php" target="_blank" class="btn btn-outline-warning">Relatório de bolsistas por Municípios (PDF)</a>
-                <a href="../vendor/relatorio-tutoria_municipio_planilha.php" target="_blank" class="btn btn-outline-success">Relatório de bolsistas por Municípios (Planilha)</a>
+                <a href="../vendor/relatorio-tutoria.php" target="_blank" class="btn btn-outline-warning m-1">Relatório de bolsistas por tutor</a>
+                <a href="../vendor/relatorio-tutoria_planilha.php" target="_blank" class="btn btn-outline-success m-1">Relatório de bolsistas por tutor (Planilha)</a>
+                <a href="../vendor/relatorio-tutoria_municipio.php" target="_blank" class="btn btn-outline-warning m-1">Relatório de bolsistas por Municípios (PDF)</a>
+                <a href="../vendor/relatorio-tutoria_municipio_planilha.php" target="_blank" class="btn btn-outline-success m-1">Relatório de bolsistas por Municípios (Planilha)</a>
+                <a href="../vendor/relatorio-disponibilidade.php" target="_blank" class="btn btn-outline-warning m-1">Relatório de disponibilidade</a>
+                <a href="../vendor/relatorio-disponibilidade_planilha.php" target="_blank" class="btn btn-outline-success m-1">Relatório de disponibilidade (Planilha)</a>
             </p>
             <h3 class="text-center bg-warning py-1">Médicos sem calendário de tutoria para remanejar</h3>
             <table class="border border-primary table table-hover table-striped table-responsive-sm">

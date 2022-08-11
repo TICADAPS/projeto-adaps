@@ -66,11 +66,21 @@ return $find->fetchObject(__CLASS__);
 
 public function selectMunicipio(int $codUf): ?array
 {
-    $joins = $this->read("select distinct mun.Municipio from municipio "
+    $joins = $this->read("select distinct mun.cod_munc, mun.Municipio from municipio "
             . "mun inner join tutor_municipio"
             . " tm on mun.cod_munc = tm.cod_munc where tm.codUf = $codUf order by mun.Municipio;");
     if ($this->fail() ||!$joins->rowCount()) {
     $this->message = "Usuário não encontrado para o id informado";
+    return null;
+}
+    return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+
+}
+public function selectTutor(): ?array
+{
+    $joins = $this->read("select tm.idTutor,md.NomeMedico from medico md inner join tutor_municipio tm on md.idMedico = tm.idTutor order by md.NomeMedico;");
+    if ($this->fail() ||!$joins->rowCount()) {
+    $this->message = "Usuário não encontrado";
     return null;
 }
     return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
@@ -97,6 +107,20 @@ public function all(int $limit = 30, int $offset = 0, string $columns = "*"): ?a
 {
 $all = $this->read("SELECT {$columns} FROM " . self::$entity . " LIMIT :limit OFFSET :offset",
  "limit={$limit}&offset={$offset}");
+
+if ($this->fail() ||!$all->rowCount()) {
+return null;
+}
+return $all->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+}
+
+public function Tutores(): ?array
+{
+$all = $this->read("SELECT idTutor,md.NomeMedico,UF,cod_munc,municipio,vaga_tutor as vaga 
+FROM tutor_municipio tm  
+    INNER JOIN medico md ON md.idMedico = tm.idTutor
+    INNER JOIN estado e ON e.cod_uf = tm.codUf    
+WHERE vaga_tutor > 0 ORDER BY UF");
 
 if ($this->fail() ||!$all->rowCount()) {
 return null;

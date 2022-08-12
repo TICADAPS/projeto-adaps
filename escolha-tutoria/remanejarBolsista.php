@@ -20,7 +20,7 @@ $tutores = $modelTutorMunicipio->Tutores();
             <img src="img/Logo_400x200.png" class="img-fluid" alt="logoAdaps" title="Logo Adaps">
         </div>
         <div class="col-md-8 col-sm-6 mt-5 ">
-            <p><b>Área de relatório dos médicos bolsistas</b></p>
+            <h1><b>Área de relatório dos médicos bolsistas</b></h1>
         </div>
     </div>
     <form action="" method="post">

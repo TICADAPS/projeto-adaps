@@ -9,6 +9,7 @@ if (!empty($codMunc) || !empty($idMedico || !empty($idTutor))){
     //var_dump([$codMunc,$idMedico,$idTutor]);
     $crud = new CrudEscolha();
     $crud->CallRemanejar($idMedico,$codMunc,$idTutor);
+    
     $_SESSION['msg'] = "<b style='color: green'>Bolsista registrado com sucesso!</b>";
     header("Location: bolsistasComTutoria.php");
 }else{

@@ -6,12 +6,13 @@ if (!isset($_SESSION['cpf'])) {
 }
 include 'Class/CrudEscolha.php';
 $crudProcedure = new CrudEscolha();
-//require __DIR__ . '/../fullstackphp/fsphp.php';
+require __DIR__ . '/../fullstackphp/fsphp.php';
 //fullStackPHPClassName("Escolha Tutoria");
 require __DIR__ . "/../source/autoload.php";
 # obtendo o id e o estado do medico logado pela sessão
 $codUf = $_SESSION['uf'];
-$idMedico = $_SESSION['idMed'];
+//var_dump($codUf);
+$idMedico = $_SESSION['id'];
 
 # instanciando um objeto da classe estado
 //var_dump($codUf);

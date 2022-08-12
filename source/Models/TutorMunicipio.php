@@ -86,6 +86,20 @@ public function selectTutor(): ?array
     return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 
 }
+public function selectTutorUf(): ?array
+{
+    $joins = $this->read("SELECT idTutor,md.NomeMedico,UF,cod_munc,municipio,vaga_tutor as vaga 
+                            FROM tutor_municipio tm  
+                                INNER JOIN medico md ON md.idMedico = tm.idTutor
+                                INNER JOIN estado e ON e.cod_uf = tm.codUf    
+                            WHERE vaga_tutor > 0 ORDER BY UF");
+    if ($this->fail() ||!$joins->rowCount()) {
+    $this->message = "Usuário não encontrado";
+    return null;
+}
+    return $joins->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+
+}
 /**
  * @param int $id
  * @param string $columns

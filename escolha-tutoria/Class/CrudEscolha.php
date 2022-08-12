@@ -253,8 +253,7 @@ class CrudEscolha extends Conexao {
                 $distanc = $d[1][0];
                 $duracion = $c[1][0];
             }
-
-            var_dump($verifica);
+            //var_dump($verifica);
         } catch (Exception $ex) {
             $distanc = 0;
         }
